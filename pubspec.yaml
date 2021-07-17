@@ -4,6 +4,7 @@ description: >-
   A port of fili.js to Dart
 environment:
   sdk: '>=2.12.0 <3.0.0'
-dependencies: {}
+dependencies:
+  complex: ^0.7.2
 dev_dependencies:
   test: '>=1.15.0 <2.0.0'

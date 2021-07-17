@@ -465,7 +465,7 @@ List<Coeffs> calcCoeffs(IirParams iparams, String behavior) {
           Fs: params.Fs,
           Fc: fd,
           Q: q,
-
+          BW: params.BW,
           gain: gain,
           preGain: preGain,
         )));

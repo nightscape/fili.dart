@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:math';
 import 'complex.dart';
 import 'math_ext.dart';
+import 'package:complex/fastmath.dart';
 
 class Coeffs {
   static const List<double> emptyList = [];
@@ -34,7 +35,12 @@ class IirCoeffs extends MapBase<String, Coeffs Function(IirParams)> {
     var Fc = params.Fc;
     var Fs = params.Fs;
     var w = 2 * pi * Fc / Fs;
-    final alpha = sin(w) / (2 * params.Q);
+    double alpha;
+    if (params.BW != null && params.BW != 0.0) {
+      alpha = sin(w) * sinh(log(2) / 2 * params.BW! * w / sin(w));
+    } else {
+      alpha = sin(w) / (2 * params.Q);
+    }
     var pre = Coeffs(
       alpha: alpha,
       cw: cos(w),
@@ -390,12 +396,14 @@ class FcFsParams extends IirParams {
   int order;
   double Fc;
   double Fs;
+  double? BW;
 
   FcFsParams({
     required this.order,
     required characteristic,
     required this.Fc,
     required this.Fs,
+    this.BW,
     String? transform,
   }) : super(characteristic: characteristic, transform: transform);
 }
@@ -409,11 +417,13 @@ class FcFsQParams extends FcFsParams {
       String? transform,
       required double Fc,
       required double Fs,
+      double? BW,
       required this.Q})
       : super(
             order: order,
             characteristic: characteristic,
             transform: transform,
+            BW: BW,
             Fc: Fc,
             Fs: Fs);
 }
@@ -433,6 +443,7 @@ class FcFsQPregainParams extends FcFsQParams with PreGain {
       String? transform,
       required this.preGain,
       this.gain = 0.0,
+      double? BW,
       required double Fc,
       required double Fs,
       required double Q})
@@ -442,6 +453,7 @@ class FcFsQPregainParams extends FcFsQParams with PreGain {
             transform: transform,
             Fc: Fc,
             Fs: Fs,
+            BW: BW,
             Q: Q);
 }
 
