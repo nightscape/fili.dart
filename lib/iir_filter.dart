@@ -1,6 +1,7 @@
 import 'dart:math';
 
-import 'package:fili.dart/complex.dart';
+import 'package:complex/complex.dart';
+import 'package:fili.dart/complex_ext.dart';
 import 'package:fili.dart/fir_filter.dart';
 
 import 'filter.dart';
@@ -17,6 +18,7 @@ class IirFilter implements Filter {
     0,
   );
   late List<Coeffs> f;
+
   IirFilter(List<Coeffs> filter)
       : f = filter,
         cf = List.generate(
@@ -40,8 +42,8 @@ class IirFilter implements Filter {
                 ));
 
   runStage(TempF s, double input) {
-    var temp = input * s.k.re - s.a1.re * s.z[0] - s.a2.re * s.z[1];
-    var out = s.b0.re * temp + s.b1.re * s.z[0] + s.b2.re * s.z[1];
+    var temp = input * s.k.real - s.a1.real * s.z[0] - s.a2.real * s.z[1];
+    var out = s.b0.real * temp + s.b1.real * s.z[0] + s.b2.real * s.z[1];
     s.z[1] = s.z[0];
     s.z[0] = temp;
     return out;
@@ -64,9 +66,9 @@ class IirFilter implements Filter {
     var theta = -pi * (Fr / Fs) * 2;
     var z = Complex(cos(theta), sin(theta));
     // k * (b0 + b1*z^-1 + b2*z^-2) / (1 + a1*z^⁻1 + a2*z^-2)
-    var p = s.k.mul(s.b0.add(z.mul(s.b1.add(s.b2.mul(z)))));
-    var q = this.cone.add(z.mul(s.a1.add(s.a2.mul(z))));
-    var h = p.div(q);
+    var p = s.k * (s.b0 + (z * (s.b1 + s.b2 * z)));
+    var q = this.cone + (z * (s.a1 + (s.a2 * z)));
+    var h = p / q;
     var res = MagnitudePhase(magnitude: h.magnitude(), phase: h.phase());
     return res;
   }
@@ -236,18 +238,21 @@ class Ret {
   List<double> out;
   SampleValue max;
   SampleValue min;
+
   Ret({required this.out, required this.min, required this.max});
 }
 
 class SampleValue {
   int sample;
   double value;
+
   SampleValue({required this.sample, required this.value});
 }
 
 class FrFsParams {
   double Fr;
   double Fs;
+
   FrFsParams({required this.Fr, required this.Fs});
 }
 
@@ -259,6 +264,7 @@ class TempF {
   Complex a2;
   Complex k;
   List<double> z;
+
   TempF({
     required this.b0,
     required this.b1,
@@ -275,6 +281,7 @@ class CC {
   double a2;
   double b1;
   double b2;
+
   CC({
     required this.a1,
     required this.a2,
@@ -286,5 +293,6 @@ class CC {
 class MagnitudePhase {
   double magnitude;
   double phase;
+
   MagnitudePhase({required this.magnitude, required this.phase});
 }

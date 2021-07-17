@@ -1,7 +1,8 @@
 import 'dart:math';
 
-import 'package:fili.dart/complex.dart';
 import 'package:fili.dart/math_ext.dart';
+
+import 'complex_ext.dart';
 
 class Foo {
   double Function(double n, double N, double a) calc;

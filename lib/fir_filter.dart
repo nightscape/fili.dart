@@ -11,7 +11,9 @@
 
 import 'dart:math';
 
-import 'complex.dart';
+import 'package:complex/complex.dart';
+
+import 'complex_ext.dart';
 import 'filter.dart';
 import 'utils.dart';
 
@@ -67,10 +69,10 @@ class FirFilter implements Filter {
       0,
     );
     for (var i = 0; i < this.f.length - 1; i++) {
-      h = h.add(this.b[i].mul(Complex(
+      h = h + this.b[i] * (Complex(
             cos(theta * i),
             sin(theta * i),
-          )));
+          ));
     }
     var m = h.magnitude();
     var res = FilterResponse(

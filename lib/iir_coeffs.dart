@@ -1,6 +1,8 @@
 import 'dart:collection';
 import 'dart:math';
-import 'complex.dart';
+import 'package:complex/complex.dart';
+
+import 'complex_ext.dart';
 import 'math_ext.dart';
 import 'package:complex/fastmath.dart';
 
@@ -84,12 +86,12 @@ class IirCoeffs extends MapBase<String, Coeffs Function(IirParams)> {
     var z0 = params.z0;
     var z1 = params.z1;
 
-    coeffs.b.add(-z0.re - z1.re);
-    coeffs.b.add(z0.re * z1.re - z0.im * z1.im);
+    coeffs.b.add(-z0.real - z1.real);
+    coeffs.b.add(z0.real * z1.real - z0.imaginary * z1.imaginary);
     var p0 = params.p0;
     var p1 = params.p1;
-    coeffs.a.add(-p0.re - p1.re);
-    coeffs.a.add(p0.re * p1.re - p0.im * p1.im);
+    coeffs.a.add(-p0.real - p1.real);
+    coeffs.a.add(p0.real * p1.real - p0.imaginary * p1.imaginary);
     if (params.type == 'lowpass') {
       coeffs.k =
           (1 + coeffs.a[0] + coeffs.a[1]) / (1 + coeffs.b[1] + coeffs.b[2]);
